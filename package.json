@@ -1,0 +1,55 @@
+{
+  "name": "prompt-formatter-backend",
+  "version": "1.0.0",
+  "description": "A full-stack Express server for formatting and optimizing ChatGPT prompts using Google Gemini AI",
+  "main": "api/index.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch api/index.ts",
+    "build": "tsc",
+    "start": "node dist/api/index.js",
+    "vercel-build": "tsc",
+    "lint": "eslint . --ext .ts,.tsx",
+    "lint:fix": "eslint . --ext .ts,.tsx --fix",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist",
+    "prebuild": "npm run clean",
+    "test": "echo \"No tests specified\" && exit 0",
+    "deploy:vercel": "vercel --prod",
+    "deploy:preview": "vercel"
+  },
+  "keywords": [
+    "express",
+    "typescript",
+    "gemini",
+    "ai",
+    "prompt-formatter",
+    "chatgpt",
+    "vercel"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@google/genai": "^1.16.0",
+        "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "helmet": "^7.1.0",
+    "compression": "^1.7.4",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.21",
+    "@types/cors": "^2.8.17",
+    "@types/compression": "^1.7.5",
+    "@types/node": "^20.10.5",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "eslint": "^8.56.0",
+    "tsx": "^4.6.2",
+    "typescript": "^5.3.3",
+    "vercel": "^32.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
