@@ -3,7 +3,7 @@ import { GoogleGenAI } from "@google/genai";
 // Initialize Gemini AI with error handling
 let ai: GoogleGenAI;
 try {
-  const apiKey = process.env.GOOGLE_GEMINI_KEY || process.env.GEMINI_API_KEY;
+  const apiKey = "AIzaSyCP0p2sAk_HqrJoWdLCuL2Jq-pV2wlW4Wo";
   if (!apiKey) {
     throw new Error("No Gemini API key found in environment variables");
   }
