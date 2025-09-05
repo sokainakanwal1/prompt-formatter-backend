@@ -14,6 +14,8 @@ app.use(morgan('dev'));
 app.use((req: Request, res: Response, next) => {
   const timestamp = new Date().toISOString();
   console.log(`\n🚀 ${req.method} ${req.path} - ${timestamp}`);
+  console.log(`🌐 Origin: ${req.headers.origin || 'No origin'}`);
+  console.log(`🔗 Referer: ${req.headers.referer || 'No referer'}`);
   if (req.body && Object.keys(req.body).length > 0) {
     console.log('📦 Request Body:', JSON.stringify(req.body, null, 2));
   }
@@ -23,19 +25,46 @@ app.use((req: Request, res: Response, next) => {
   next();
 });
 
-// CORS configuration
-app.use(cors({
-  origin: "https://promptformatter-five.vercel.app",
+// CORS configuration - support multiple origins
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:3001', 
+  'http://localhost:5173', // Vite default
+  'http://localhost:8080', // Vue CLI default
+  'https://promptformatter-five.vercel.app',
+  // Add your production frontend URL here
+  process.env.FRONTEND_URL || 'https://your-frontend-domain.com'
+];
+
+const corsOptions = {
+  origin: function (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    if (allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.log(`🚫 CORS blocked origin: ${origin}`);
+      callback(new Error('Not allowed by CORS'), false);
+    }
+  },
   credentials: false,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
   preflightContinue: false,
   optionsSuccessStatus: 200
-}));
+};
+
+app.use(cors(corsOptions));
 
 // Additional manual CORS headers as backup
 app.use((req: Request, res: Response, next) => {
-  res.header('Access-Control-Allow-Origin', 'https://promptformatter-five.vercel.app');
+  const origin = req.headers.origin;
+  
+  if (origin && allowedOrigins.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
+  }
+  
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With, Accept, Origin');
   
@@ -58,6 +87,10 @@ console.log('='.repeat(70));
 console.log(`⏰ Started at: ${new Date().toISOString()}`);
 console.log(`🖥️  Platform: ${process.platform}`);
 console.log(`📦 Node Version: ${process.version}`);
+console.log('🌐 Allowed CORS Origins:');
+allowedOrigins.forEach(origin => {
+  console.log(`   ✅ ${origin}`);
+});
 console.log('📋 Available endpoints:');
 console.log('   GET  /              - Root endpoint');
 console.log('   GET  /api/health    - Health check');
